@@ -1,9 +1,9 @@
 ---
 layout: primer_without_heading
-title: Publicly share LaTeX sources
+title: Practical Course: COntributing to an Open-Source Project
 ---
 
-# Publicly share LaTeX sources
+# Practical Course: COntributing to an Open-Source Project
 
 1. Clone this template
 2. [Setup GitHub Pages deployments](https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-create-ssh-deploy-key)

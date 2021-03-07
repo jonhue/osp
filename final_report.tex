@@ -1,15 +1,19 @@
 \documentclass[12pt]{scrartcl}
 
-\usepackage[sorting=ynt,style=apa]{biblatex}
+\usepackage[sorting=ynt,style=numeric]{biblatex}
 \addbibresource{sources.bib}
+
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
 
 \def\code#1{\texttt{\frenchspacing#1}}
 
 \usepackage{hyperref}
+\usepackage[htt]{hyphenat}
 
 \parskip=6pt
-\linespread{1.1}
 \usepackage[letterpaper,margin=1.25in]{geometry}
+\usepackage{parskip}
 
 \let\oldsection\section
 \renewcommand\section{\clearpage\oldsection}
@@ -53,10 +57,55 @@
 
 \tableofcontents{}
 
-\section{The TypeScript open-source project}
+\section{Introduction}
 \pagenumbering{arabic}
 
+TypeScript is a programming language that extends JavaScript by adding types \cite{Website}. It is funded by Microsoft and primarily developed by a dedicated team of Microsoft engineers. TypeScript is also one of Microsoft's first ventures into open-source. Development on TypeScript began privately at Microsoft in 2010 \cite{Tung2020}. With the first release in 2012, TypeScript was made available freely under the Apache-2.0 License \cite{Microsoft2014}. First, the code was hosted on Microsoft's own forge website CodePlex before being moved to GitHub in 2014 \cite{Turner2014}. New feature releases of TypeScript are published every other month \cite{Rosenwasser2017}.
+
+Today, the TypeScript GitHub repository has more than 69 thousand stars \cite{Repository} making it the 20th most starred repository on GitHub \cite{RepositoriesRanking}. The \code{typescript} package on NPM has over 19 million weekly downloads \cite{Package}. With more than 21 thousand dependent packages, TypeScript is the 24th most depended-upon package on NPM \cite{PackageDependents}. According to GitHub, almost 3.2 million public repositories depend on GitHub \cite{NetworkDependents}.
+
+TypeScript's genesis was the surge in JavaScript development in the late 2000s as JavaScript runtimes became more efficient. With the rise of single page applications and Node.js supporting large JavaScript backends, the development and maintenance of large-scale JavaScript projects became a challenge \cite{Foley2012a}. Soma Somasegar, then Corporate Vice President of Microsoft’s Developer Division, summarized in 2012 that "we’re starting to see applications of unprecedented size written with JavaScript, despite the fact that creating large-scale JavaScript applications is hard. TypeScript makes it easier" \cite{Foley2012}. Anders Hejlsberg, one of TypeScript's lead developers, argued that refactoring becomes practically impossible using a programming language without static types and strong static analysis \cite{Cassel2019}.
+
+The TypeScript project has particular significance as it marks a turning point in Microsoft's attitude towards open-source. The former CEO of Microsoft Steve Ballmer famously compared copyleft licenses to a "cancer that attaches itself in an intellectual property sense to everything it touches" \cite{ThomasCGreene2001} and also complained about a lack of accountability in open-source software \cite{JoeMcKendrick2003}. However, In recent years with the success of TypeScript and other open-source efforts at Microsoft this attitude has changed. Today, the company is the single biggest contributor to open-source in the world \cite{TomWarren2020}.
+
+According to Hejlsberg, the team developing TypeScript at Microsoft knew that they were only "going to appeal to the JavaScript community ... by being open source", but also noted that at the time Microsoft was ”very ambivalent” about open-source and even ”afraid” of it \cite{Tung2020}. Hejlsberg further claims that since its move to GitHub in 2014, TypeScript has not only been open-source but also doing their "entire development process in the open" \cite{Tung2020}.
+
+I critically reflect on my contributions to TypeScript and my communication with members of the TypeScript team and external contributors. Further, I examine systemic features of the development process on an individual and a project level. The report ends with suggestions on towards increasing accessibility and engagement to grow community support and contributions.
+
 \section{Contributions}
+
+This section gives a brief overview of all of my contributions to TypeScript. My contributions can largely be divided into three categories: contributions towards \textit{more accurate and concise error reporting}, contributions towards \textit{increased type safety} by strengthening existing or adding new type checks, and lastly contributions towards \textit{better type inference}. During the practical course I used a project board to track my work. This project board is also publicly available \cite{ProjectBoard}.
+
+\subsection{Error reporting}
+
+\begin{itemize}
+    \item I worked on an improvement that reduced the length of the error message when a type is not assignable to a type parameter \cite{42849}. My pull request was merged eight days after it was opened without any further interaction \cite{42952}.
+    \item I also worked on an improvement to make the error message when the \code{typeof} operator should be omitted more specific \cite{42523}. I published a pull request that implemented the improvement less than a day after the original issue was created and opened to external contributors \cite{42530}. Ultimately, my changes were not merged because Daniel Rosenwasser who created the original issue realized that there was already another ongoing effort preventing this error in the first place \cite{42530Comment}.
+\end{itemize}
+
+\subsection{Type safety}
+
+\begin{itemize}
+    \item The very first issue I worked on was an improvement to the type checks for the \code{in} operator\footnote{\href{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/in}{\code{in} operator}} \cite{41317}. Because it was a breaking change of type checks on a relatively common operator, quite a few design decisions had to be made \cite{41928}. My work and the conversations with the TypeScript team are discussed in greater detail as part of the case study in Section \ref{case_study}.
+    \item I worked on an improvement that expanded the checks for uncalled functions to all operands of disjunctions \cite{35584}\cite{42835}. Previously only the rightmost argument of a disjunction was checked.
+    \item Initially, my pull request mentioned in the previous point also expanded uncalled function checks to negations. By the request of the reviewer \cite{42835Comment} I extracted this improvement to a separate issue \cite{43096} and pull request \cite{43097}.
+\end{itemize}
+
+\subsection{Type inference}
+
+\begin{itemize}
+    \item Inferred type is not the same as what's passed in original generic type (TODO)
+    \item When indexing the intersection type where one member is a tuple with an index that exceeded the length of that tuple, the resulting type is expected to be \code{undefined}. I fixed a bug that led the resulting type of such an indexing operation to be the union over all members of the tuple type, effectively treating the tuple as an infinitely long array \cite{42557}\cite{42602}.
+    \item I also worked on a larger undertaking that improved the type inference for generic mapped types\footnote{\href{https://www.typescriptlang.org/docs/handbook/2/mapped-types.html}{Mapped Types}} \cite{37670}\cite{42382}. Nathan Fenner, another external contributor, supported this effort by reviewing my pull request and suggesting changes \cite{42382Comment}.
+    \item Generics extending unions cannot be narrowed (TODO)
+\end{itemize}
+
+\subsection{Other work}
+
+\begin{itemize}
+    \item While first familiarizing myself with TypeScript's development environment I noticed that the documentation on inspecting changes to the test baselines in the contributing guidelines was outdated \cite{ContributingGuidelines}. I therefore created an issue and a pull request to update them \cite{41991}\cite{42031}.
+    \item I also worked on an issue improving the specificity of the event type of the \code{readystatechange} event \cite{41775}. While working on this improvement I realized that even though the original issue was tracked in the TypeScript repository, the change had to be made in the \code{TypeScript-DOM-lib-generator} repository as this is where the DOM types are specified \cite{DOMLibGenerator}. My pull request did not end up being merged due to a design decision trading performance for accuracy \cite{969Comment}.
+\end{itemize}
 
 \section{Communication}
 
@@ -65,20 +114,68 @@
 \subsection{Tone and efficiency}
 
 \subsection{Iteration pace}
+\label{iteration_page}
 
 \subsection{Public and private communication}
 
 \subsection{Communication with external and internal contributors}
 
 \section{Case study}
+\label{case_study}
+
+In this case study I examine my work process and the communication with the TypeScript team as exemplified by my work on improving the type checks for the \code{in} operator \cite{41317}. I begin by describing the TypeScript development environment which is an essential part of the contribution process. Then, I discuss specific aspects of this particular contribution and how my approach generalized to other contributions. This is followed by an examination of the iteration process where I debate the communication as part of the pull request and the design decisions that were made along the way. Finally, I summarize how this contribution related to my other contributions.
 
 \subsection{Development environment}
 
+TypeScript is bootstrapped, that is TypeScript itself is written in TypeScript. Therefore, cloning, setting up development tools, and installing dependencies is fast and well-documented \cite{ContributingGuidelines}. There are two main aspects of the development environment that I examine: the development environment when working on the source files of TypeScript and when writing tests.
+
+The core of the TypeScript compiler is implemented in relatively few files in \par\code{src/compiler}. The fundamental parts like scanning, parsing, type-checking, and code generation largely live in isolated files. This means that these files are rather large. The type-checking and type-inference algorithm which was the subject of most of my contributions, in particular, is implemented in \code{checker.ts} which spans more than 41 thousand lines of code \cite{CheckerFile}. This comes with some drawbacks that are discussed further in Section \ref{feedback_development_environment}. One immediate consequence is, however, that regardless of which particular editor is used, running static analysis on an edited file is very slow.
+
+The tests can be divided into two categories. There are automated tests that are run on every single commit and are part of the TypeScript repository \cite{ContributingGuidelines} and there are user tests that run on actual TypeScript implementations. These latter tests are invoked by members of the TypeScript team on pull requests as needed and run by a bot \cite{UserTests}.
+
+A test case is a single TypeScript source file. When a test case is run, TypeScript generates multiple files including the generated JavaScript, the inferred type of every expression, and the errors produced by the compiler \cite{ContributingGuidelines}. These files are tracked by Git under \code{tests/baselines/reference} and also referred to as baselines. A local test run produces updated baselines in \code{tests/baselines/local} which can then be compared to the tracked baselines and accepted if the differences are valid \cite{ContributingGuidelines}. A launch config for VS Code is also provided which can be used to launch test cases directly from the editor \cite{ContributingGuidelines}. Possible improvements to this test system are discussed in Section \ref{feedback_development_environment}.
+
 \subsection{Development process}
+
+Now, I discuss the given issue and how I implemented a first solution in greater detail. The problem was to ensure that the right operand of the \code{in} operator is not a primitive type at runtime as the ECMAScript spec requires this operand to be an object \cite{InOperator}. If a primitive type is given, a runtime error is thrown. There are, however, a multitude of nuances between allowing any value as the right operand and absolute insurance that the right operand is never a primitive type. The problem was not to detect when a the right operand was a primitive type literal (like in the expression \code{key in 42}) as this was already detected by the compiler. The problem was to detect when a value was used as the right operand whose type \textit{could} potentially be a primitive, for example because it is an unconstrained type parameter.
+
+This specific issue already had an ongoing conversation where Andrew Branch, the TypeScript team member who was assigned to the issue, already indicated which function a potential fix would need to change \cite{41317Comment}. This was incredibly helpful. For other issues, the main difficulty was to determine \textit{where} a change should go rather than \textit{what} the change should be. The process that worked best in most cases was to start with a test case that reproduced the problem by throwing an error (all problems affecting type inference or type checking can be specified in such a way). To then identify where this error is added in the type checker and then use call traces to determine where the change has to be made. Naturally, this approach works better with type checking problems where the problematic area is \textit{closer} to the place where the error is added. For type inference problems where the problematic area may be very far away from this place, this approach is less ideal.
+
+Once the problematic area has been determined, I first made changes until the reproducible test case was behaving as expected. Then I ran the code on an increasingly larger number of tests. I quickly realized how delicate the type inference and type checking code is. Because it is very interrelated and there are usually many different contexts in which some piece of code is run, even a very small change can have a tremendous impact on the behavior of the compiler. For example, when I restricted the type of the right operand of the \code{in} operator too much, there were many test cases failing even if they have not been explicitly testing type checking of the \code{in} operator.
 
 \subsection{Iteration on the public pull request}
 
+The here examined issue was already assigned to a member of the TypeScript team, namely Andrew Branch, and scheduled for the 4.2 release of TypeScript \cite{41317}. This is not the case for all issues. In general, there are three aspects in which issues differ which influence how much traction an issue gets:
+
+\begin{itemize}
+    \item An issue is \textit{approved} once it was confirmed and labeled by a member of the TypeScript team. If it was labeled with \code{help wanted} external contributors may submit pull requests \cite{ContributingGuidelines}. At this stage issues are commonly also assigned to a milestone.
+    \item An issue is \textit{scheduled} (or a milestone bug) once it was assigned to a milestone that is not the \code{Backlog} milestone. This may be an upcoming release of TypeScript, like in the case of the examined issue.
+    \item An issue is \textit{assigned} once it was assigned to a member of the TypeScript team. Commonly all schedule issues are also assigned, but unscheduled issues are sometimes assigned too. However, usually only after a pull request was opened.
+\end{itemize}
+
+Once a pull request is opened, these issue states are automatically transmitted to the pull request using a bot.
+
+(TODO: INSERT DIAGRAM ON ISSUE AND PR STATES)
+
+The TypeScript team tracks reviews of pull requests with a dedicated project board on GitHub \cite{PRBacklog}. New pull requests are manually added to \code{Not started}. During the iteration process, pull requests cycle between \code{Waiting on author} and \code{Needs review}. Once a pull request is close to a merge, it is moved to \code{Needs merge} from where it is automatically moved to \code{Done} once it was merged.
+
+(TODO: INSERT DIAGRAM ON PR BACKLOG PROJECT BOARD)
+
+During the iteration process of the examined issue \cite{41928}, quite a few design decisions had to be made. Namely, we had to find an accurate and concise error message and identify the strictness of the type check. The latter, especially, required multiple rounds of iteration. This was because we had to strike a balance between type safety and breaking as little code as possible. My initial solution worked by ensuring the right operand of an \code{in} expression was not assignable to a primitive type like \code{number} or \code{string} \cite{41928Comment1}. Due to a limitation with narrowing type parameters \cite{13995} that would make it difficult to enforce these stronger type checks in practice, a more conservative fix was suggested by members of the TypeScript team that only ensures that the resolved constraint of the right operand's type is not assignable to a primitive \cite{41928Comment2}. These solutions sound similar at first, however, the latter is a negative check ensuring that the type of the right operand does not explicitly extend a primitive type while the former solution is a positive check that the type of the right expression cannot possibly extend a primitive type. Ultimately, the decision to opt for weaker type safety reaffirms TypeScript's focus on usability and unobtrusiveness.
+
+This attitude is exemplified by Ryan Cavanaugh's (lead developer of TypeScript) comment on the expression \code{typeof val === 'object' \&\& '\_\_isMaybe' in val} which lead to an error with my initial implementation:
+
+\begin{quote}
+    This error is \textit{actually correct} --- \code{val} could be \code{null} --- but boy are we going to get bug reports about this. Maybe we need to special-case the error message. \cite{41928Comment3}
+\end{quote}
+
+Because this was such a wide-ranging change, in some additional rounds of iteration test coverage had to be widened \cite{41928Comment4}. Because while opening the pull request I forgot to allow maintainers to edit my branch, my pull request was closed immediately before being merged so that a few changes to the error message could be made \cite{42288}.
+
 \subsection{Summary and comparison to other contributions}
+
+The work on this issue has generally been very enjoyable. The conversation was always friendly, comments were concise, and intentions were communicated clearly. What was of tremendous help, was that the reviewers included examples in their comments like when Andrew Branch was suggesting to widen the test coverage \cite{41928Comment4}.
+
+Most importantly, however, the iterations were fast paced. This gave everyone a sense that this issue was moving in the right decision. This is exemplified by an average \textit{response time} to my comments of 0.7 days compared to an average response time across all contributions of TODO (Section \ref{iteration_page}). Also, the \textit{response rate} was 100\% compared to an overall response rate of TODO (Section \ref{iteration_page}).
 
 \section{Reflection and criticism}
 
@@ -91,6 +188,7 @@
 \subsection{Project management}
 
 \subsection{Development environment}
+\label{feedback_development_environment}
 
 \subsection{Personal interaction and mentoring}
 

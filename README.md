@@ -1,6 +1,6 @@
 ---
 layout: primer_without_heading
-title: Practical Course: Contributing to an Open-Source Project
+title: "Practical Course: Contributing to an Open-Source Project"
 ---
 
 # Practical Course: Contributing to an Open-Source Project
